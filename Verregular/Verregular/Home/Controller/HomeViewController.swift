@@ -25,10 +25,10 @@ class HomeViewController: UIViewController {
         
         button.setTitle("Select verbs".localized, for: .normal)
         button .setTitleColor(UIColor.darkText, for: .normal)
-        button.backgroundColor = .gray
-        button.layer.cornerRadius = 20
+        button.backgroundColor = .systemGray5
+        button.layer.cornerRadius = cornerRadius
         button.translatesAutoresizingMaskIntoConstraints = false
-        //button.addTarget(self, action: #selector(goToSelectVerbs), for: .touchUpInside)
+        button.addTarget(self, action: #selector(goToSelectViewController), for: .touchUpInside)
         
         return button
     }()
@@ -38,24 +38,64 @@ class HomeViewController: UIViewController {
         
         button.setTitle("Train verbs".localized, for: .normal)
         button .setTitleColor(UIColor.darkText, for: .normal)
-        button.backgroundColor = .gray
-        button.layer.cornerRadius = 20
+        button.backgroundColor = .systemGray5
+        button.layer.cornerRadius = cornerRadius
         button.translatesAutoresizingMaskIntoConstraints = false
-        //button.addTarget(self, action: #selector(goToTrainVerbs), for: .touchUpInside)
+        button.addTarget(self, action: #selector(goToTrainViewController), for: .touchUpInside)
         
         return button
     }()
     
-    
-    
     // MARK: - Properties
+    
+    private let cornerRadius: CGFloat = 20
+    private let buttonHeight: CGFloat = 80
     
     // MARK: - Life cycle
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        
+        configureUI()
+        
     }
     
     // MARK: - Private methods
+    @objc // нужно для совместимости с objective c
+    
+    private func goToSelectViewController() {
+        navigationController?.pushViewController(SelectVerbsViewController(), animated: true)
+    }
+    
+    @objc // нужно для совместимости с objective c
+    
+    private func goToTrainViewController() {
+        navigationController?.pushViewController(TrainViewController(), animated: true)
+    }
+    
+    private func configureUI() {
+        view.addSubview(titleLabel)
+        view.addSubview(firstButton)
+        view.addSubview(secondButton)
+        
+        view.backgroundColor = .white
+        
+        setupConstraints()
+    }
+    
+    private func setupConstraints() {
+        firstButton.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
+        firstButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        firstButton.heightAnchor.constraint(equalToConstant: buttonHeight).isActive = true
+        firstButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 80).isActive = true
+        
+        titleLabel.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
+        titleLabel.bottomAnchor.constraint(equalTo: firstButton.topAnchor, constant: -80).isActive = true
+        
+        secondButton.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor).isActive = true
+        secondButton.topAnchor.constraint(equalTo: firstButton.bottomAnchor, constant: 40).isActive = true
+        secondButton.heightAnchor.constraint(equalToConstant: buttonHeight).isActive = true
+        secondButton.widthAnchor.constraint(equalTo: firstButton.widthAnchor).isActive = true
+        
+    }
 }
 
