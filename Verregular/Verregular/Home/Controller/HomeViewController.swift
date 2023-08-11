@@ -95,7 +95,6 @@ class HomeViewController: UIViewController {
         secondButton.topAnchor.constraint(equalTo: firstButton.bottomAnchor, constant: 40).isActive = true
         secondButton.heightAnchor.constraint(equalToConstant: buttonHeight).isActive = true
         secondButton.widthAnchor.constraint(equalTo: firstButton.widthAnchor).isActive = true
-        
     }
 }
 
