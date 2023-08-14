@@ -9,7 +9,7 @@ import UIKit
 
 final class SelectVerbsViewController: UITableViewController {
     // MARK: - Properties
-    private var dataSource = IrregularVerbs()
+    private var dataSource = IrregularVerbs.shared
 
     // MARK: - Life cycle
     
@@ -19,8 +19,6 @@ final class SelectVerbsViewController: UITableViewController {
         title = "Select verbs".localized
         view.backgroundColor = .white
         tableView.register(SelectVerbTableViewCell.self, forCellReuseIdentifier: "SelectVerbTableViewCell")
-        
-        dataSource.configureVerbs()
     }
     
     // MARK: - Private methods
@@ -30,8 +28,8 @@ final class SelectVerbsViewController: UITableViewController {
     
 }
 
-// MARK: - UITableViewDataSource
-extension SelectVerbsViewController {
+    // MARK: - UITableViewDataSource
+    extension SelectVerbsViewController {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         dataSource.verbs.count
     }
@@ -47,8 +45,8 @@ extension SelectVerbsViewController {
     }
 }
 
-// MARK: - UITableViewDelegate
-extension SelectVerbsViewController {
+    // MARK: - UITableViewDelegate
+    extension SelectVerbsViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let verb = dataSource.verbs[indexPath.row]
         if isSelected(verb: verb) {
@@ -56,7 +54,6 @@ extension SelectVerbsViewController {
         } else {
             dataSource.selectedVerbs.append(verb)
         }
-        
         tableView.reloadRows(at: [indexPath], with: .automatic)
     }
 }

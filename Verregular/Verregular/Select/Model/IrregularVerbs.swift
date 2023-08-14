@@ -7,11 +7,20 @@
 
 import Foundation
 
-class IrregularVerbs {
+final class IrregularVerbs {
+    
+    // Singleton
+    static var shared = IrregularVerbs()
+    private init() {
+        configureVerbs()
+    }
+    
+    // MARK: - Properties
     private(set) var verbs: [Verb] = []
     var selectedVerbs: [Verb] = []
     
-    func configureVerbs() {
+    // MARK: - Methods
+    private func configureVerbs() {
         verbs = [
             Verb(infinitive: "arise", pastSimple: "arose", participle: "arisen"),
             Verb(infinitive: "awake", pastSimple: "awoke", participle: "awoken"),

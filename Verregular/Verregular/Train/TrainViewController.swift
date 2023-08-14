@@ -26,7 +26,6 @@ final class TrainViewController: UIViewController {
         label.font = .boldSystemFont(ofSize: 28)
         label.textColor = .black
         label.textAlignment = .center
-        label.text = "Read".uppercased()
         
         return label
     }()
@@ -76,25 +75,72 @@ final class TrainViewController: UIViewController {
         button.backgroundColor = .systemGray5
         button.setTitle("Check".localized, for: .normal)
         button.setTitleColor(UIColor.black, for: .normal)
+        button.addTarget(self, action: #selector(checkAction), for: .touchUpInside)
         
         return button
     }()
     
     // MARK: - Properties
-    
     private let edgeInsets = 30
+    private let dataSource = IrregularVerbs.shared.selectedVerbs
+    private var currentVerb: Verb? {
+        guard dataSource.count > count else {return nil }
+        return dataSource[count]
+    }
+    private var count = 0 {
+        didSet {
+            infinitiveLabel.text = currentVerb?.infinitive
+            pastSimpleTextField.text = ""
+            participleTextField.text = ""
+        }
+    }
     
     // MARK: - Life cycle
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         title = "Train Verbs".localized
         
         setupUI()
+        
+        hideKeyboardWhenTappedAround()
+        
+        infinitiveLabel.text = dataSource.first?.infinitive
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        registerForKeyboardNotification()
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        
+        unregisterForKeyboardNotification()
     }
     
     // MARK: - Private methods
+    
+    @objc
+    private func checkAction() {
+        if checkAnswers() {
+            if currentVerb?.infinitive == dataSource.last?.infinitive {
+                navigationController?.popViewController(animated: true)
+            } else {
+                count += 1
+            }
+        } else {
+            checkButton.backgroundColor = .systemRed
+            checkButton.setTitle("Try again".localized, for: .normal)
+        }
+    }
+    
+    private func checkAnswers() -> Bool {
+        pastSimpleTextField.text?.lowercased() == currentVerb?.pastSimple.lowercased() &&
+        participleTextField.text?.lowercased() == currentVerb?.participle.lowercased()
+    }
+    
     private func setupUI() {
         view.backgroundColor = .white
         
@@ -153,15 +199,58 @@ final class TrainViewController: UIViewController {
 }
     // MARK: - UITextFieldDelegate
     extension TrainViewController: UITextFieldDelegate {
-        
+        func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+            if pastSimpleTextField.isFirstResponder {
+                participleTextField.becomeFirstResponder()
+            } else {
+                scrollView.endEditing(true)
+            }
+            return true
+        }
     }
 
-// MARK: - Keyboard events
-private extension TrainViewController {
+    // MARK: - Keyboard events
+    private extension TrainViewController {
     func registerForKeyboardNotification() {
-        NotificationCenter.default.addObserver(<#T##observer: Any##Any#>,
-                                               selector: <#T##Selector#>,
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(keyboardWillShow(_:)),
                                                name: UIResponder.keyboardWillShowNotification,
                                                object: nil)
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(keyboardWillHide),
+                                               name: UIResponder.keyboardWillHideNotification,
+                                               object: nil)
+    }
+    
+    func unregisterForKeyboardNotification() {
+        NotificationCenter.default.removeObserver(self,
+                                                  name: UIResponder.keyboardWillShowNotification,
+                                                  object: nil)
+        NotificationCenter.default.removeObserver(self,
+                                                  name: UIResponder.keyboardWillHideNotification,
+                                                  object: nil)
+    }
+    
+    @objc
+    func keyboardWillShow(_ notification: Notification) {
+        guard let frame = notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? CGRect else { return }
+        
+        scrollView.contentInset.bottom = frame.height + 50
+    }
+    
+    @objc
+    func keyboardWillHide() {
+        scrollView.contentInset.bottom = .zero - 50
+    }
+        
+    func hideKeyboardWhenTappedAround() {
+            let recognizer = UITapGestureRecognizer(target: self,
+                                                    action: #selector(hideKeyboard))
+        scrollView.addGestureRecognizer(recognizer)
+    }
+        
+    @objc
+    func hideKeyboard() {
+        scrollView.endEditing(true)
     }
 }
