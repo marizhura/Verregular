@@ -19,6 +19,9 @@ final class SelectVerbsViewController: UITableViewController {
         title = "Select verbs".localized
         view.backgroundColor = .white
         tableView.register(SelectVerbTableViewCell.self, forCellReuseIdentifier: "SelectVerbTableViewCell")
+        
+        IrregularVerbs.shared.configureVerbs()
+        tableView.reloadData()
     }
     
     // MARK: - Private methods

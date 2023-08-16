@@ -20,7 +20,7 @@ final class IrregularVerbs {
     var selectedVerbs: [Verb] = []
     
     // MARK: - Methods
-    private func configureVerbs() {
+    internal func configureVerbs() {
         verbs = [
             Verb(infinitive: "arise", pastSimple: "arose", participle: "arisen"),
             Verb(infinitive: "awake", pastSimple: "awoke", participle: "awoken"),
@@ -32,5 +32,6 @@ final class IrregularVerbs {
             Verb(infinitive: "bend", pastSimple: "bent", participle: "bent"),
             Verb(infinitive: "bet", pastSimple: "bet", participle: "bet")
         ]
+        selectedVerbs = verbs
     }
 }
